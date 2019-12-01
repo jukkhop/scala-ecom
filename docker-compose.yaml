@@ -1,0 +1,11 @@
+db:
+  container_name: ecom-postgres
+  image: postgres:9.6-alpine
+  ports:
+    - "5432:5432"
+  environment:
+    POSTGRES_DB: "ecom_db"
+    POSTGRES_USER: "ecom_user"
+    POSTGRES_PASSWORD: "ecom_user_password"
+  volumes:
+    - ./sql:/home/ecom/sql
