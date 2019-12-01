@@ -9,14 +9,24 @@ import play.api.mvc._
 
 import slick.driver.PostgresDriver.simple._
 
-case class Product(id: Int, title: String, desc: String)
+case class Product(
+  id: Int,
+  title: String,
+  desc: String,
+  image: String,
+  stock: Int,
+  price: Float
+)
 
 // Matches schema of the database table
 class Products(tag: Tag) extends Table[Product](tag, "products") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title = column[String]("title")
   def desc = column[String]("desc")
-  def * = (id, title, desc) <> (Product.tupled, Product.unapply)
+  def image = column[String]("image")
+  def stock = column[Int]("stock")
+  def price = column[Float]("price")
+  def * = (id, title, desc, image, stock, price) <> (Product.tupled, Product.unapply)
 }
 
 /**
@@ -60,7 +70,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
       implicit session =>
         val products = TableQuery[Products]
-        Json.toJson(products.list);
+        Json.toJson(products.list.sortBy(_.id));
     }
   }
 
@@ -105,13 +115,19 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     def writes(product: Product) = Json.obj(
       "id" -> product.id,
       "title" -> product.title,
-      "desc" -> product.desc
+      "desc" -> product.desc,
+      "image" -> product.image,
+      "stock" -> product.stock,
+      "price" -> product.price
     )
   }
 
   implicit val productReads: Reads[Product] = (
     (__ \ "id").read[Int] and
       (__ \ "title").read[String] and
-      (__ \ "desc").read[String]
+      (__ \ "desc").read[String] and
+      (__ \ "image").read[String] and
+      (__ \ "stock").read[Int] and
+      (__ \ "price").read[Float]
     )(Product.apply _)
 }
