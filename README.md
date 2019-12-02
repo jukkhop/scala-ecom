@@ -1,4 +1,5 @@
-## Local development
+![alt text](https://github.com/jukkhop/scala-ecom/blob/master/screenshot.png 'Screenshot')
 
-`docker-compose up -d`
-`psql -h localhost -U ecom_user ecom_db -f /home/ecom/sql/setup.sql`
+[![CircleCI](https://circleci.com/gh/jukkhop/scala-ecom/tree/master.svg?style=svg)](https://circleci.com/gh/jukkhop/scala-ecom/tree/master)
+
+#### https://scala-ecom.purelogic.xyz/
