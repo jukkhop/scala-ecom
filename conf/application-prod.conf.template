@@ -1,0 +1,23 @@
+# https://www.playframework.com/documentation/latest/Configuration
+#
+# Contains configuration for production environment.
+#
+
+play.filters.enabled += "play.filters.cors.CORSFilter"
+play.filters.enabled += "play.filters.csrf.CSRFFilter"
+play.filters.enabled += "play.filters.hosts.AllowedHostsFilter"
+
+play.filters.hosts {
+  allowed = [".domain.com"]
+}
+
+play.filters.cors {
+  allowedOrigins = ["https://domain.com"]
+  allowedHttpMethods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  allowedHttpHeaders = ["Accept", "Content-Type"]
+}
+
+db.default.driver=org.postgresql.Driver
+db.default.url="jdbc:postgresql://domain.com:5432/ecom_db?user=ecom_user&password=ecom_user_password"
+
+play.http.secret.key = "changeme"

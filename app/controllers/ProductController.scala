@@ -30,11 +30,13 @@ class Products(tag: Tag) extends Table[Product](tag, "products") {
 }
 
 /**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
+  * Controller for /api/product routes
   */
 @Singleton
-class ProductController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class ProductController @Inject()(config: Configuration, cc: ControllerComponents) extends AbstractController(cc) {
+
+  val DB_URL = config.get[String]("db.default.url")
+  val DB_DRIVER = config.get[String]("db.default.driver")
 
   def getAll() = Action { request =>
     Ok(getProducts())
@@ -64,18 +66,16 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     Ok(s"Successfully deleted product $id")
   }
 
-  val connectionUrl = s"jdbc:postgresql://localhost:5432/ecom_db?user=ecom_user&password=ecom_user_password"
-
   def getProducts(): JsValue = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+    Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
-        Json.toJson(products.list.sortBy(_.id));
+        Json.toJson(products.list.sortBy(_.id))
     }
   }
 
   def getProduct(id: Int): Option[JsValue] = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+    Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
         val result = products.filter(_.id === id).take(1).list
@@ -87,7 +87,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def addProduct(product: Product): Int = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+     Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
         products += product
@@ -96,7 +96,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def updateProduct(product: Product) = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+     Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
         products.filter(_.id === product.id).update(product)
@@ -104,7 +104,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def deleteProduct(id: Int) = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+     Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
         products.filter(_.id === id).delete

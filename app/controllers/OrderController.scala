@@ -10,21 +10,21 @@ import play.api.mvc._
 import slick.driver.PostgresDriver.simple._
 
 /**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
+  * Controller for /api/order routes
   */
 @Singleton
-class OrderController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class OrderController @Inject()(config: Configuration, cc: ControllerComponents) extends AbstractController(cc) {
+
+  val DB_URL = config.get[String]("db.default.url")
+  val DB_DRIVER = config.get[String]("db.default.driver")
 
   def index(id: Int) = Action { request =>
     val product = orderProduct(id)
     Ok(product)
   }
 
-  val connectionUrl = s"jdbc:postgresql://localhost:5432/ecom_db?user=ecom_user&password=ecom_user_password"
-
   def orderProduct(id: Int): JsValue = {
-    Database.forURL(connectionUrl, driver = "org.postgresql.Driver") withSession {
+    Database.forURL(DB_URL, driver = DB_DRIVER) withSession {
       implicit session =>
         val products = TableQuery[Products]
         val old = products.filter(_.id === id).list.head

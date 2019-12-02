@@ -5,7 +5,11 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import App from '../containers/App';
 
-const { REACT_APP_REST_ENDPOINT = 'http://localhost:9000/api' } = process.env;
+const { REACT_APP_REST_ENDPOINT } = process.env;
+
+if (!REACT_APP_REST_ENDPOINT) {
+  throw new Error('Missing environment variable REACT_APP_REST_ENDPOINT');
+}
 
 const restLink = new RestLink({
   uri: `${REACT_APP_REST_ENDPOINT}`,
