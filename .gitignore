@@ -6,7 +6,6 @@
 /.settings
 /RUNNING_PID
 build
-conf/application-prod.conf
 logs
 node_modules
 target
