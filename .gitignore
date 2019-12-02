@@ -1,4 +1,3 @@
-.env.production
 *.DS_Store
 /.classpath
 /.idea
