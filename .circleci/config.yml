@@ -10,7 +10,13 @@ workflows:
           tag: "${CIRCLE_SHA1}"
       - aws-ecs/deploy-service-update:
           cluster-name: "${AWS_RESOURCE_NAME_PREFIX}-cluster"
-          container-env-var-updates: container=${AWS_RESOURCE_NAME_PREFIX}-service,name=APPLICATION_SECRET,value=${APPLICATION_SECRET}
+          container-env-var-updates: >
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=APPLICATION_SECRET,value=${APPLICATION_SECRET},
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=POSTGRES_DB,value=${POSTGRES_DB},
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=POSTGRES_HOST,value=${POSTGRES_HOST},
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=POSTGRES_PASSWORD,value=${POSTGRES_PASSWORD},
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=POSTGRES_PORT,value=${POSTGRES_PORT},
+            container=${AWS_RESOURCE_NAME_PREFIX}-service,name=POSTGRES_USER,value=${POSTGRES_USER}
           container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX}-service,tag=${CIRCLE_SHA1}"
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
           requires:
